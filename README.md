@@ -38,6 +38,18 @@ https://data.mendeley.com/datasets/jxy85cr3th/2
 | Unique Genres | 30 |
 | Positive Recommendation Rate | 82.27% |
 
+## 📂 Data Access
+
+Dataset is not included due to size.
+
+Download from:
+https://data.mendeley.com/datasets/jxy85cr3th/2
+
+Place inside:
+data/
+
+Or mount Google Drive if using Colab.
+
 ---
 
 ## 🔄 Project Workflow
