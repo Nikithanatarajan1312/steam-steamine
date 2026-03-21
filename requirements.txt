@@ -1,0 +1,27 @@
+# ============================================================
+# SteaMine
+# Essential dependencies only
+# ============================================================
+
+# Core
+numpy>=1.23.0
+pandas>=1.5.0
+scipy>=1.10.0
+
+# Visualization
+matplotlib>=3.6.0
+seaborn>=0.12.0
+
+# Machine Learning
+scikit-learn>=1.2.0
+mlxtend>=0.22.0
+
+# NLP & Text Mining
+gensim>=4.3.0
+nltk>=3.8.0
+vaderSentiment>=3.3.2
+langdetect>=1.0.9
+
+# Jupyter
+jupyter>=1.0.0
+notebook>=6.5.0
