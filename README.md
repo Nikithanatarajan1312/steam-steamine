@@ -162,35 +162,6 @@
 
 ---
 
-## 📁 Project Structure
-
-```
-steammine/
-│
-├── data/                           # Data directory (not included in repo)
-│   ├── games.json                  # Game metadata (download separately)
-│   └── reviews/                    # Review CSVs (download separately)
-│       ├── 10_reviews.csv
-│       ├── 20_reviews.csv
-│       └── ...
-│
-├── notebooks/
-│   ├── steammine_cp1.ipynb        # Checkpoint 1: EDA
-│   ├── steammine_cp2.ipynb        # Checkpoint 2: RQ Formation ✅
-│   └── steammine_cp3.ipynb        # Checkpoint 3: Full Analysis (TBD)
-│
-├── outputs/                        # Generated outputs
-│   ├── figures/                    # Visualizations
-│   ├── models/                     # Saved models (LDA, clustering)
-│   └── results/                    # Analysis results (rules, clusters, topics)
-│
-├── requirements.txt                # Python dependencies
-├── README.md                       # This file
-└── LICENSE                         # License information
-```
-
----
-
 ## 🔧 Installation & Setup
 
 ### Prerequisites
