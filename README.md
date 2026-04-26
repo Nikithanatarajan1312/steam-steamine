@@ -1,324 +1,265 @@
-# 🎮 SteaMine  
-## Multi-Modal Data Mining and Engagement Analysis of Steam Games
+# SteaMine
 
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
-[![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange.svg)](https://jupyter.org/)
+![Python](https://img.shields.io/badge/Python-3.x-blue)
+![Notebook](https://img.shields.io/badge/Main%20Artifact-main_notebook.ipynb-success)
+![Status](https://img.shields.io/badge/Project-Final%20Deliverable-brightgreen)
 
----
+SteaMine studies a core discovery paradox in the Steam marketplace: **many games are liked, but only a small fraction are seen**.  
+Using game metadata, engagement features, and large-scale review language, the project explains **why similarly tagged games can end up with very different outcomes**.
 
-## 📌 Project Overview
+## Start here
 
-**SteaMine** is a comprehensive data mining project that explores structural, behavioral, and textual patterns in the Steam gaming marketplace using multi-modal analysis techniques. The project integrates game metadata with large-scale user reviews to uncover:
-
-- 🎯 **Genre co-occurrence patterns** and their relationship to recommendation success
-- 📊 **Engagement-based game clusters** revealing market segments from blockbusters to niche titles
-- 💬 **Latent topics in review text** and their association with recommendation behavior
-- 💰 **Price-engagement dynamics** across different game types
-- 📈 **Temporal trends** in game releases and review activity
+- Main deliverable: **`main_notebook.ipynb`**
+- Checkpoint notebooks: `checkpoints/checkpoint_1.ipynb`, `checkpoints/checkpoint_2.ipynb`
+- Pitch video: https://youtu.be/_ceeB4O_iUM
 
 ---
 
-## 📂 Dataset
+## Table of contents
 
-### Primary Source: Steam Games Metadata and Player Reviews (2020–2024)
-
-**Source:** [Mendeley Data](https://data.mendeley.com/datasets/jxy85cr3th/2)  
-**Citation:** Abdelqader, M. (2025). *Steam Games Metadata and Player Reviews Dataset*. Mendeley Data.
-
-### 📊 Dataset Composition
-
-| Component | Description | Size |
-|-----------|-------------|------|
-| **games.json** | Game metadata (genres, price, playtime, CCU, reviews) | 65,686 games |
-| **Review CSVs** | User reviews (text, recommendation, playtime, date) | ~12.8M reviews total |
-| **Analysis Sample** | Randomly sampled games for computational feasibility | 400 games, ~1.84M reviews |
-
-### 📈 Sample Statistics (400-Game Analysis Set)
-
-| Metric | Value |
-|--------|-------|
-| Total Games (Metadata) | 65,686 |
-| Games in Sample | 400 |
-| Total Reviews in Sample | 1,840,146 |
-| Unique Reviewers | 1,401,918 |
-| Unique Genres | 20 (in sample) |
-| Positive Recommendation Rate | 82.27% |
-| English-Only Reviews | 774,574 (47%) |
-| Median Review Length | 14 words |
-| Avg Genres per Game | 3.30 |
+1. [What this project does](#what-this-project-does)  
+2. [Motivation in one paragraph](#motivation-in-one-paragraph)  
+3. [Repository layout](#repository-layout)  
+4. [Dataset](#dataset)  
+5. [Final notebook (`main_notebook`) at a glance](#final-notebook-main_notebook-at-a-glance)  
+6. [Research questions → methods → outputs](#research-questions--methods--outputs)  
+7. [Key quantitative results (documented run)](#key-quantitative-results-documented-run)  
+8. [Algorithms and libraries](#algorithms-and-libraries)  
+9. [Environment, installation, and reproduction](#environment-installation-and-reproduction)  
+10. [Preprocessing summary](#preprocessing-summary)  
+11. [Limitations and future work](#limitations-and-future-work)  
+12. [Deliverables and links](#deliverables-and-links)  
+13. [Citation](#citation)  
+14. [License and acknowledgements](#license-and-acknowledgements)
 
 ---
 
-## 🎯 Research Questions
+## Why this matters
 
-### RQ1: Genre Co-occurrence and Recommendation Success
-**Task:** Frequent itemset mining / Association rule mining  
-**Algorithms:** Apriori, FP-Growth (course techniques)  
-**Metrics:** Support, confidence, lift, leverage, interpretability  
+On the merged sample, recommendation quality and visibility diverge sharply: a game can be well-reviewed and still nearly invisible.  
+SteaMine turns that gap into measurable outputs that can be inspected by players, developers, and marketplace stakeholders.
 
-**Goal:** Identify which genre combinations are most strongly associated with high recommendation rates and engagement metrics.
+### Long-tail problem (core motivation)
 
-### RQ2: Engagement-Based Game Segmentation
-**Task:** Clustering  
-**Algorithms:** k-Means, Hierarchical Clustering (course techniques)  
-**Metrics:** Silhouette score, Davies-Bouldin index, cluster interpretability  
+The key question behind this project is: **if many games are liked, why do so few capture attention?**  
+That is the long-tail visibility problem this notebook quantifies and explains.
 
-**Goal:** Discover latent market segments based on engagement (CCU, playtime) and analyze how price and genre composition differ across clusters.
+> In our documented run, the top 10% of games capture roughly 97% of peak-CCU visibility.
 
-### RQ3: Review Sentiment and Topic Modeling
-**Task:** Sentiment analysis + Topic modeling  
-**Algorithms:** VADER, Latent Dirichlet Allocation / LDA (external techniques)  
-**Metrics:** VADER compound scores, topic coherence (Cv), perplexity  
-
-**Goal:** Extract latent themes from review text and examine their relationship to recommendation behavior beyond what metadata alone reveals.
+![Steam store home share view](./images/store_home_share.jpg)
 
 ---
 
-## 🔬 Key Findings (Checkpoint 2)
+## Visual highlights
 
-### Genre Structure
-- **Average basket size:** 3.30 genres per game
-- **Co-occurrence sparsity:** 0.54 (dense itemset space suitable for mining)
-- **Most frequent pair:** Casual + Indie (20,511 occurrences)
-- **Genre-outcome correlation:** 21% range in recommendation rates across genres
+Below are supporting visuals for the discovery context and recommendation ecosystem that this analysis investigates.
 
-### Engagement Distribution
-- **Zero-engagement games:** 69% have peak CCU = 0
-- **High-engagement cluster:** Median CCU = 99, Median playtime = 536 mins
-- **Price-engagement correlation:** Weak (ρ ≈ 0.15)
-- **Optimal k for clustering:** 4 (separates Invisible/Niche/Mid-Tier/Blockbuster)
+| Marketplace context | Recommendation context |
+|---|---|
+| ![Popular Steam games panel](./images/popular_steam_games.jpeg) | ![Steam recommendation panel](./images/steam_rec.jpeg) |
+| ![Players like you love panel](./images/players_like_you_love.jpeg) | ![Recommendation algorithm panel](./images/steam_rec_algo_based.png) |
 
-### Review Text Characteristics
-- **Non-English content:** 23% of reviews (filtered for topic modeling)
-- **VADER sentiment range:** -0.95 to +0.98
-- **Topic coherence (LDA):** Cv = 0.37–0.40 (GOOD range)
-- **Processing time:** 15 seconds for 10K reviews (scalable)
-
-### Feasibility Validation
-- ✅ **Apriori vs FP-Growth:** Identical outputs (32 itemsets, 74 rules at support=0.10)
-- ✅ **k-Means clustering:** Silhouette score ≈ 0.36 (acceptable structure)
-- ✅ **LDA scalability:** Tested on 1K/5K/10K samples, coherence stable across sizes
+For quantitative project outputs (long-tail histogram, segment map, and tag-vs-reality analysis plots), see `main_notebook.ipynb`.
 
 ---
 
-## 🔄 Project Workflow
+## What this project does
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Data Acquisition                      │
-│  • Download games.json + review CSVs from Mendeley      │
-│  • Sample 400 games (seed=42) for analysis              │
-└──────────────────────┬──────────────────────────────────┘
-                       ↓
-┌─────────────────────────────────────────────────────────┐
-│              Data Preprocessing & Cleaning               │
-│  • Standardize column names                             │
-│  • Convert types (price, playtime, recommend)           │
-│  • Parse genres into lists                              │
-│  • Filter non-ASCII text for topic modeling             │
-│  • Remove duplicates                                     │
-└──────────────────────┬──────────────────────────────────┘
-                       ↓
-┌─────────────────────────────────────────────────────────┐
-│                   Data Integration                       │
-│  • Merge games.json + review CSVs on app_id             │
-│  • Validate merge quality (0% data loss)                │
-│  • Create game-level aggregates                         │
-└──────────────────────┬──────────────────────────────────┘
-                       ↓
-┌─────────────────────────────────────────────────────────┐
-│            Exploratory Data Analysis (EDA)               │
-│  • Distribution analysis (price, CCU, playtime)         │
-│  • Genre co-occurrence patterns                          │
-│  • Sentiment distribution (VADER)                        │
-│  • Language detection                                    │
-│  • Zero-engagement analysis                              │
-└──────────────────────┬──────────────────────────────────┘
-                       ↓
-┌─────────────────────────────────────────────────────────┐
-│              Feasibility Testing (CP2)                   │
-│  • RQ1: Apriori vs FP-Growth comparison                 │
-│  • RQ2: k-Means clustering (k=3, k=4)                   │
-│  • RQ3: LDA scalability test (1K/5K/10K samples)        │
-└──────────────────────┬──────────────────────────────────┘
-                       ↓
-┌─────────────────────────────────────────────────────────┐
-│         Research Question Formation (CP2) ✅             │
-│  • Define 3 research questions                           │
-│  • Map to course/external techniques                     │
-│  • Validate feasibility with code                        │
-│  • Plan methodology for CP3                              │
-└──────────────────────┬──────────────────────────────────┘
-                       ↓
-┌─────────────────────────────────────────────────────────┐
-│          Full Analysis & Modeling (CP3) 🔜               │
-│  • Execute full RQ1 analysis (association rules)         │
-│  • Execute full RQ2 analysis (clustering)                │
-│  • Execute full RQ3 analysis (sentiment + topics)        │
-│  • Cross-validate results                                │
-│  • Generate insights and recommendations                 │
-└─────────────────────────────────────────────────────────┘
-```
+SteaMine is a single end-to-end notebook narrative that:
+
+- Loads **Steam game metadata** (`games.json`) and **per-game review CSVs** from the Mendeley dataset.  
+- **Merges** them on `app_id` so every downstream analysis uses the **same game universe**.  
+- Runs **three analysis blocks** (genre association mining, engagement clustering, review topics + sentiment).  
+- Produces **three user-facing interpretations**: **Hidden Gems Finder**, **Tag vs. Reality Checker**, and **Market Position View** (with fixed segment colors across plots).
+
+The main notebook is reproducible (`RANDOM_STATE = 42` where randomness applies) and documents concrete metrics from a full run.
 
 ---
 
-## 🔧 Installation & Setup
+## Motivation in one paragraph
 
-### Prerequisites
-- Python 3.8 or higher
-- Jupyter Notebook or JupyterLab
-- 8GB+ RAM recommended (for full dataset processing)
+On the merged sample in `main_notebook.ipynb`, the **median game-level recommendation rate is about 0.80**, yet **peak concurrent users (CCU)** are extremely concentrated: roughly **the top 10% of games account for about 97% of total peak-CCU "visibility"** in that sample. So "mostly positive" does **not** mean fairly distributed attention. SteaMine turns that inequality into **measurable segments**, **association patterns**, and **review-language themes**, then packages them into outputs a reader or stakeholder can **inspect** (rules and charts), not just a single aggregate score.
 
-### 1. Clone Repository
+---
+
+## Repository layout
+
+| Path | Role |
+|------|------|
+| **`main_notebook.ipynb`** | **Final curated narrative** — primary artifact this README describes. |
+| `checkpoints/checkpoint_1.ipynb` | Checkpoint 1 — EDA, dataset choice, feasibility. |
+| `checkpoints/checkpoint_2.ipynb` | Checkpoint 2 — research questions and method mapping. |
+| `requirements.txt` | Python dependencies for local or Colab-style runs. |
+| `README.md` | This file. |
+
+Final notebook lives at the repository root; checkpoint notebooks are in `checkpoints/`.
+
+---
+
+## Dataset
+
+**Primary source:** *Steam Games Metadata and Player Reviews (2020–2024)*, **Mendeley Data**, DOI **[10.17632/jxy85cr3th.2](https://data.mendeley.com/datasets/jxy85cr3th/2)** (Abdelqader, 2025).
+
+| Component | Contents |
+|-----------|-----------|
+| **`games.json`** | Per-game metadata: `app_id`, name, **genres**, price, playtime fields, **peak_ccu**, review counts, etc. On the order of **~65k** titles in the public metadata file. |
+| **Review CSVs** | One file per game (typical naming: includes `app_id` in filename). Rows include **review text**, **recommend** flag, playtime at review, dates, helpfulness, etc. |
+
+**Important:** numbers quoted in `main_notebook.ipynb` refer to that notebook's documented merge: after loading and cleaning, it documents ~6.64M review rows and an inner merge leaving 1,318 games that appear in both loaded reviews and metadata. If you load more or fewer review files, counts change - always cite the run you executed.
+
+A **Google Drive mirror** for the dataset is linked inside the notebook’s opening markdown (same link as in the deliverable index).
+
+---
+
+## Final notebook (`main_notebook`) at a glance
+
+`main_notebook.ipynb` is structured roughly as follows:
+
+1. **Data and reproducible setup** — paths (`GAMES_PATH`, `REVIEWS_GLOB`), load `games.json`, glob and concatenate review CSVs, clean types, parse genres, normalize `recommend`, build `analysis_df` (inner merge + per-game `rec_rate` / `review_count`).  
+2. **Analysis A — Genre pattern signals (RQ1)** — genre baskets → **Apriori** and **FP-Growth** (mlxtend), rule tables and lift/confidence visuals.  
+3. **Analysis B — Engagement segments (RQ2)** — scale features → **K-Means** with **k = 4**, silhouette sweep for k = 2…6, segment labels (**Hidden / Niche / Mid / Blockbuster-like**), segment-colored scatter plots.  
+4. **Analysis C — Tag vs. reality (RQ3)** — English-oriented text filters, **LDA** (scikit-learn) on bag-of-words, **VADER** sentiment by recommend label and by segment; per-game / case-study style comparisons (e.g. **Evergate vs. Factorio** in the narrative).  
+5. **System outputs** — **Hidden Gems Finder** (rule-based shortlist), **Tag vs. Reality** cards, **Market Position** figure with hidden-gem overlay.  
+6. **Conclusion, limitations, future work** — consolidated bullets and roadmap.
+
+The notebook may assume **Google Colab** for `drive.mount` and optional `pip` installs; see [Reproduction](#environment-installation-and-reproduction) for running locally.
+
+---
+
+## Research questions → methods → outputs
+
+| RQ | Question (short) | Lens | Algorithms | Primary outputs |
+|----|------------------|------|--------------|-----------------|
+| **RQ1** | Which **genre combinations** associate with stronger **recommendation** context? | Store **presentation** | **Apriori**, **FP-Growth** (frequent itemsets / association rules) | Supports **Tag vs. Reality** (**tag / storefront** side) |
+| **RQ2** | How do games split by **visibility** when ratings look similar? | **Attention / engagement** | **K-Means** (k = 4), **StandardScaler**, silhouette diagnostics | **Market Position View**, **Hidden Gems Finder** |
+| **RQ3** | How does **review language** differ from **store labels**, especially for overlooked titles? | Player **experience** | **LDA**, **VADER**, **langdetect** (optional) | **Tag vs. Reality** (**“reality”** side from reviews) |
+
+**Design choice (cluster count):** silhouette is **higher** for **k = 2**, but **k = 4** is kept for **interpretability** — four segments map to the product story (Hidden / Niche / Mid / Blockbuster-like) instead of collapsing to “high vs. low engagement” only.
+
+---
+
+## Key quantitative results (documented run)
+
+Figures below match the documented run inside `main_notebook.ipynb` (your merge may differ if file coverage differs).
+
+| Topic | Approximate value (from `main_notebook.ipynb`) |
+|-------|-------------------------------|
+| Games after inner merge | **1,318** |
+| Review rows loaded & cleaned | **~6.64M** |
+| Median game-level `rec_rate` | **~0.802** |
+| Top 10% of games’ share of total peak CCU | **~97.**% (visibility concentration) |
+| Spearman: `rec_rate` vs `peak_ccu` | **~+0.22** |
+| Spearman: `rec_rate` vs `average_playtime_forever` | **~+0.08** |
+| K-Means k | **4**; silhouette (this run) | **~0.313** |
+| RQ1: Apriori vs FP-Growth | **Identical** frequent itemsets at `min_support = 0.10`; **58** rules with lift ≥ 1.0 |
+| Strongest rule (example) | `{Action, RPG} → {Adventure}` — **lift ~1.65**, **confidence ~0.75** |
+| Hidden segment size | **564 / 1,318** games (~**43%**); median `rec_rate` **~0.86** with near-zero visibility |
+| Hidden Gems shortlist (this run) | **154** candidates (transparent percentile rules in notebook) |
+
+**LDA:** four topics are used as a **readable snapshot** (reactions/friction, product state, social positivity, design pillars — see notebook interpretation). **VADER:** recommended vs not-recommended distributions separate clearly in the documented plots; segment-level means are reported in the closing section.
+
+---
+
+## Algorithms and libraries
+
+- **Core:** Python 3.x, **pandas**, **NumPy**, **SciPy**  
+- **Plots:** **Matplotlib**, **Seaborn**  
+- **Mining / ML:** **scikit-learn** (K-Means, scaling, `CountVectorizer`, `LatentDirichletAllocation`), **mlxtend** (Apriori / FP-Growth, `TransactionEncoder`)  
+- **NLP:** **VADER** (`vaderSentiment`), **langdetect**, **NLTK** stopword lists where used  
+
+See `requirements.txt` for minimum package versions.
+
+---
+
+## Environment, installation, and reproduction
+
+### 1. Clone and install
+
 ```bash
-git clone https://github.com/yourusername/steammine.git
-cd steammine
-```
-
-### 2. Install Dependencies
-```bash
+git clone https://github.com/Nikithanatarajan1312/steam-steamine.git
+cd steam-steamine
 pip install -r requirements.txt
 ```
 
-Or install manually:
-```bash
-pip install pandas numpy matplotlib seaborn scikit-learn \
-            mlxtend gensim nltk vaderSentiment langdetect \
-            jupyter notebook
-```
+For **Colab**, the notebook’s second code cell installs `langdetect`, `vaderSentiment`, and `mlxtend` if the Colab runtime is detected.
 
-### 3. Download Dataset
-1. Visit [Mendeley Data](https://data.mendeley.com/datasets/jxy85cr3th/2)
-2. Download `games.json` and review CSVs
-3. Place in `data/` directory:
-   ```
-   data/
-   ├── games.json
-   └── reviews/
-       ├── 10_reviews.csv
-       ├── 20_reviews.csv
-       └── ...
-   ```
+### 2. Obtain data
 
-### 4. (Optional) Download NLTK Data
-```python
-import nltk
-nltk.download('stopwords')
-nltk.download('punkt')
-```
+Download **`games.json`** and the **review CSV collection** from [Mendeley](https://data.mendeley.com/datasets/jxy85cr3th/2) (or use the Drive mirror linked in the notebook).
 
----
+### 3. Configure paths
 
-## 🚀 Usage
+In **`main_notebook.ipynb`**, set:
 
-### Run Checkpoint 2 Notebook (Current)
-```bash
-jupyter notebook notebooks/steammine_cp2.ipynb
-```
+- `GAMES_PATH` — path to `games.json`  
+- `REVIEWS_GLOB` — glob that matches all review CSVs (e.g. `/path/to/reviews/*.csv`)
 
-### For Google Colab Users
-1. Upload notebook to Google Drive
-2. Mount Drive in Colab:
-   ```python
-   from google.colab import drive
-   drive.mount('/content/drive')
-   ```
-3. Update `BASE_PATH` in notebook to your Drive location
+If `app_id` is missing inside a CSV, the notebook can recover it from the **filename** (see loading cell).
 
-### Quick Start (Minimal Example)
-```python
-import pandas as pd
-import json
+### 4. Run
 
-# Load game metadata
-with open('data/games.json', 'r') as f:
-    games = pd.DataFrame(json.load(f))
+- **Colab:** mount Drive if needed, then **Run all**.  
+- **Jupyter:** skip or adapt the `drive.mount` cell; ensure the same packages are installed.
 
-# Load sample reviews
-reviews = pd.read_csv('data/reviews/10_reviews.csv')
+**Reproducibility:** `RANDOM_STATE = 42` is used for clustering, LDA, and random subsampling where applicable.
 
-# Check data
-print(f"Games: {len(games):,}")
-print(f"Reviews: {len(reviews):,}")
-```
+**Full vs. partial text pipeline:** the imports cell defines **`USE_FULL_TEXT_PIPELINE`**. When **`False`**, language filtering / LDA / VADER use **documented row caps** for faster iteration. When **`True`**, the notebook is intended to process **all eligible review rows** for those steps (expect **longer wall time** and higher memory use).
+
+**Hardware:** no GPU or paid API is required for the **documented** pipeline; a machine with **enough RAM** for ~6M+ rows in pandas is recommended for a **full** text pass.
 
 ---
 
-## 📊 Reproducibility
+## Preprocessing summary
 
-### Controlled Randomness
-All random operations use fixed seeds for reproducibility:
-- **Sample selection:** `seed=42`
-- **k-Means clustering:** `random_state=42`
-- **LDA topic modeling:** `random_state=42`
-- **Train/test splits:** `random_state=42`
-
-### Computational Environment
-```
-Python: 3.10+
-Pandas: 1.5+
-NumPy: 1.23+
-Scikit-learn: 1.2+
-Gensim: 4.3+
-MLxtend: 0.22+
-```
-
-### Sample Size Justification
-- **Full dataset:** 65,686 games with 12.8M+ reviews
-- **Analysis sample:** 400 games (~0.6% of total)
-- **Rationale:** Balances computational feasibility with statistical power
-- **Validation:** Sample characteristics match population distributions
+- **Metadata:** normalize columns, parse **genres** into sorted unique lists, coerce numeric fields, `dropna` / dedupe on `app_id`.  
+- **Reviews:** lowercase column names, enforce required columns, normalize **`recommend`** to {0, 1}, drop rows missing `app_id` or `recommend`, strip review text.  
+- **Merge:** aggregate **`rec_rate`** and **`review_count`** per `app_id`, **inner-merge** onto `games` → **`analysis_df`**.  
+- **RQ1:** each game’s genre list encoded as a **transaction** (`TransactionEncoder`) for itemset mining.  
+- **RQ2:** features typically include **log-scaled** engagement fields plus price and `rec_rate`; **StandardScaler** before K-Means.  
+- **RQ3:** length thresholds, optional English filter, **CountVectorizer** + **LDA**; **VADER** on review strings (truncated per scorer’s usual practice in code).
 
 ---
 
-## 📈 Key Techniques & Algorithms
+## Limitations and future work
 
-### Course Techniques
-| Technique | Algorithm | Library | Use Case |
-|-----------|-----------|---------|----------|
-| **Frequent Itemsets** | Apriori, FP-Growth | mlxtend | RQ1: Genre patterns |
-| **Clustering** | k-Means, Hierarchical | scikit-learn | RQ2: Game segments |
+Summarized from Section 8 of `main_notebook.ipynb` (not exhaustive):
 
-### External Techniques
-| Technique | Algorithm | Library | Use Case |
-|-----------|-----------|---------|----------|
-| **Sentiment Analysis** | VADER | vaderSentiment | RQ3: Review polarity |
-| **Topic Modeling** | LDA | gensim | RQ3: Review themes |
-| **Language Detection** | langdetect | langdetect | RQ3: Text filtering |
+- **Coverage:** results generalize to the **merged subset** (games with both metadata and loaded review files), not the entire Steam catalog.  
+- **Association, not causation:** correlations and segments; not a causal identification of why a title is “Hidden.”  
+- **LDA / lexicon:** topics are **qualitative**; some tokens can be noisy; VADER is **not** gaming-slang-tuned.  
+- **Hidden Gems rules:** **transparent heuristics** (e.g. high `rec_rate` vs low `peak_ccu` by percentiles), not a learned ranker.  
+- **Static snapshot:** not a time-series model of launch, updates, or seasonality.
 
-### Evaluation Metrics
-- **Association Rules:** Support, confidence, lift, leverage
-- **Clustering:** Silhouette score, Davies-Bouldin index
-- **Topic Modeling:** Coherence (Cv), perplexity
-- **Sentiment:** VADER compound scores (-1 to +1)
-  
----
-
-## 📊 Sample Outputs
-
-### Association Rules (RQ1 Preview)
-```
-{RPG, Indie, Action} → {Adventure}
-  Support: 0.128
-  Confidence: 0.878
-  Lift: 1.956
-```
-
-### Cluster Profiles (RQ2 Preview)
-```
-Cluster 1 (Invisible): CCU=0, Playtime=0, Rec=57.9%
-Cluster 2 (Niche):     CCU=0, Playtime=0, Rec=84.9%
-Cluster 3 (Mid-Tier):  CCU=7, Playtime=89, Rec=75.8%
-Cluster 4 (Blockbuster): CCU=212, Playtime=1050, Rec=80.5%
-```
-
-### Topic Example (RQ3 Preview)
-```
-Positive Review Topic 1:
-  fun, great, amazing, love, story, hours, playing
-
-Negative Review Topic 1:
-  bad, dead, boring, waste, refund, broken, bugs
-```
+**Future work** (from the same section) includes scaling to the full metadata catalog, stratified or transformer-based sentiment, temporal analysis on review dates, causal-style comparisons, recommender integration, and a small **Streamlit / Gradio** demo.
 
 ---
+
+## Deliverables and links
+
+| Item | URL |
+|------|-----|
+| **GitHub** | https://github.com/Nikithanatarajan1312/steam-steamine |
+| **Pitch video (~2 min)** | https://youtu.be/_ceeB4O_iUM |
+| **Dataset (Mendeley)** | https://data.mendeley.com/datasets/jxy85cr3th/2 |
+| **Main notebook** | https://github.com/Nikithanatarajan1312/steam-steamine/blob/main/main_notebook.ipynb |
+| **Checkpoint 1** | https://github.com/Nikithanatarajan1312/steam-steamine/blob/main/checkpoints/checkpoint_1.ipynb |
+| **Checkpoint 2** | https://github.com/Nikithanatarajan1312/steam-steamine/blob/main/checkpoints/checkpoint_2.ipynb |
+
+---
+
+## Citation
+
+When referencing the dataset:
+
+**Abdelqader, Hisham (2025).** *Steam Games Metadata and Player Reviews (2020–2024).* Mendeley Data, V2. DOI: **10.17632/jxy85cr3th.2**.  
+https://data.mendeley.com/datasets/jxy85cr3th/2
+
+---
+
+## License and acknowledgements
+
+Add a **LICENSE** file to this repository if you intend open redistribution; the notebook's **Collaboration Declaration** lists documentation sources (mlxtend, scikit-learn, VADER, langdetect, Mendeley) and discloses use of AI tools for brainstorming, debugging, and narrative polish - see the end of `main_notebook.ipynb` for the exact wording.
+
+---
+
+*This README is written to match `main_notebook.ipynb` as the authoritative final narrative. If major outputs or paths change after a new run, update the key quantitative results and path sections accordingly.*
