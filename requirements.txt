@@ -19,7 +19,7 @@ mlxtend>=0.22.0
 # NLP & Text Mining
 gensim>=4.3.0
 nltk>=3.8.0
-vaderSentiment>=3.3.2
+vaderSentiment==3.3.2
 langdetect>=1.0.9
 
 # Jupyter
