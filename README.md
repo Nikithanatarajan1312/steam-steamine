@@ -3,6 +3,8 @@
 Author: Nikitha Natarajan  
 Course: CSCE 676 - Data Mining, Spring 2026
 
+![SteaMine banner](./assets/steam-logo-welcome-banner.jpg)
+
 ![Python](https://img.shields.io/badge/Python-3.12.13-blue)
 ![Notebook](https://img.shields.io/badge/Main%20Artifact-main_notebook.ipynb-success)
 ![Status](https://img.shields.io/badge/Project-Final%20Deliverable-brightgreen)
@@ -53,24 +55,7 @@ That is the long-tail visibility problem this notebook quantifies and explains.
 
 > In our documented run, the top 10% of games capture 99.1% of peak-CCU visibility.
 
-![Steam store home share view](./assets/store_home_share.jpg)
-
----
-
-## Visual highlights
-
-Below are supporting visuals for the discovery context and recommendation ecosystem that this analysis investigates.
-
-<p align="center">
-  <img src="./assets/popular_steam_games.jpeg" alt="Popular Steam games panel" width="48%" />
-  <img src="./assets/steam_rec.jpeg" alt="Steam recommendation panel" width="48%" />
-</p>
-<p align="center">
-  <img src="./assets/players_like_you_love.jpeg" alt="Players like you love panel" width="48%" />
-  <img src="./assets/steam_rec_algo_based.png" alt="Recommendation algorithm panel" width="48%" />
-</p>
-
-For quantitative project outputs (long-tail histogram, segment map, and tag-vs-reality analysis plots), see `main_notebook.ipynb`.
+![Long-tail visibility concentration](./assets/long-tail.png)
 
 ---
 
