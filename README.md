@@ -27,19 +27,18 @@ This can help developers and platforms better understand visibility gaps and imp
 
 1. [What this project does](#what-this-project-does)  
 2. [Research Questions](#research-questions)  
-3. [Motivation in one paragraph](#motivation-in-one-paragraph)  
-4. [Key insights](#key-insights)  
-5. [Repository layout](#repository-layout)  
-6. [Dataset](#dataset)  
-7. [Final notebook (`main_notebook`) at a glance](#final-notebook-main_notebook-at-a-glance)  
-8. [Research questions → methods → outputs](#research-questions--methods--outputs)  
-9. [Key quantitative results (documented run)](#key-quantitative-results-documented-run)  
-10. [Algorithms and libraries](#algorithms-and-libraries)  
-11. [Environment, installation, and reproduction](#environment-installation-and-reproduction)  
-12. [Preprocessing summary](#preprocessing-summary)  
-13. [Limitations and future work](#limitations-and-future-work)  
-14. [Deliverables and links](#deliverables-and-links)  
-15. [Citation](#citation)
+3. [Key insights](#key-insights)  
+4. [Repository layout](#repository-layout)  
+5. [Dataset](#dataset)  
+6. [Final notebook (`main_notebook`) at a glance](#final-notebook-main_notebook-at-a-glance)  
+7. [Research questions → methods → outputs](#research-questions--methods--outputs)  
+8. [Key quantitative results (documented run)](#key-quantitative-results-documented-run)  
+9. [Algorithms and libraries](#algorithms-and-libraries)  
+10. [Environment, installation, and reproduction](#environment-installation-and-reproduction)  
+11. [Preprocessing summary](#preprocessing-summary)  
+12. [Limitations and future work](#limitations-and-future-work)  
+13. [Deliverables and links](#deliverables-and-links)  
+14. [Citation](#citation)
 
 ---
 
@@ -77,15 +76,6 @@ The main notebook is reproducible (`RANDOM_STATE = 42` where randomness applies)
 - **RQ1:** Which genre combinations are associated with stronger recommendation context?
 - **RQ2:** How do games split by visibility when ratings are similar?
 - **RQ3:** How does review language differ from store-facing labels, especially for overlooked titles?
-
----
-
-## Motivation in one paragraph
-
-A lot of Steam games are genuinely liked by players, but attention is not shared fairly.  
-SteaMine focuses on that gap: it helps explain why good games stay hidden, surfaces hidden gems, and compares what store tags promise vs what players actually describe in reviews.
-
-In the documented run, the median game-level recommendation rate is **0.8421**, but visibility is highly concentrated: the top **10%** of games account for **99.1%** of total peak-CCU visibility.
 
 ---
 
@@ -148,12 +138,12 @@ A **Google Drive mirror** for the dataset is linked inside the notebook’s open
 
 `main_notebook.ipynb` is structured roughly as follows:
 
-1. **Data and reproducible setup** - paths (`GAMES_PATH`, `REVIEWS_GLOB`), load `games.json`, glob and concatenate review CSVs, clean types, parse genres, normalize `recommend`, build `analysis_df` (inner merge + per-game `rec_rate` / `review_count`).  
-2. **Analysis A - Genre pattern signals (RQ1)** - genre baskets -> **Apriori** and **FP-Growth** (mlxtend), rule tables and lift/confidence visuals.  
-3. **Analysis B - Engagement segments (RQ2)** - scale features -> **K-Means** with **k = 4**, silhouette sweep for k = 2..6, segment labels (**Hidden / Niche / Mid / Blockbuster-like**), segment-colored scatter plots.  
-4. **Analysis C - Tag vs. reality (RQ3)** - English-oriented text filters, **LDA** (scikit-learn) on bag-of-words, **VADER** sentiment by recommend label and by segment; per-game / case-study style comparisons from an automatically selected same-rating, high-contrast pair.  
-5. **System outputs** - **Hidden Gems Finder** (rule-based shortlist), **Tag vs. Reality** cards, **Market Position** figure with hidden-gem overlay.  
-6. **Conclusion, limitations, future work** - consolidated bullets and roadmap.
+1. **Data setup** - load metadata + reviews, clean key fields, and build `analysis_df`.
+2. **Analysis A (RQ1)** - Apriori/FP-Growth genre pattern mining.
+3. **Analysis B (RQ2)** - K-Means engagement segmentation with silhouette diagnostics.
+4. **Analysis C (RQ3)** - LDA + VADER for review-language and sentiment signals.
+5. **System outputs** - Hidden Gems Finder, Tag vs Reality cards, and Market Position view.
+6. **Conclusion** - key findings, limitations, and future work.
 
 The notebook may assume **Google Colab** for `drive.mount` and optional `pip` installs; see [Reproduction](#environment-installation-and-reproduction) for running locally.
 
@@ -267,7 +257,6 @@ Then set `FULL_REVIEW_CACHE_PATH` in `main_notebook.ipynb` and keep `USE_REVIEW_
 
 - Metadata is normalized (`app_id` cleaned, numeric fields coerced, genres parsed).
 - Reviews are standardized (`recommend` normalized to 0/1, invalid rows removed, text cleaned).
-- Raw CSVs are consolidated with `scripts/build_full_reviews_cache.py` into `full_reviews_clean.parquet`.
 - The final notebook builds `analysis_df` by inner-joining metadata with per-game review aggregates (`rec_rate`, `review_count`).
 - Feature prep then feeds RQ1 (transactions for association rules), RQ2 (scaled engagement features for K-Means), and RQ3 (vectorized text for LDA + VADER sentiment).
 
