@@ -61,10 +61,14 @@ That is the long-tail visibility problem this notebook quantifies and explains.
 
 Below are supporting visuals for the discovery context and recommendation ecosystem that this analysis investigates.
 
-![Popular Steam games panel](./assets/popular_steam_games.jpeg)
-![Steam recommendation panel](./assets/steam_rec.jpeg)
-![Players like you love panel](./assets/players_like_you_love.jpeg)
-![Recommendation algorithm panel](./assets/steam_rec_algo_based.png)
+<p align="center">
+  <img src="./assets/popular_steam_games.jpeg" alt="Popular Steam games panel" width="48%" />
+  <img src="./assets/steam_rec.jpeg" alt="Steam recommendation panel" width="48%" />
+</p>
+<p align="center">
+  <img src="./assets/players_like_you_love.jpeg" alt="Players like you love panel" width="48%" />
+  <img src="./assets/steam_rec_algo_based.png" alt="Recommendation algorithm panel" width="48%" />
+</p>
 
 For quantitative project outputs (long-tail histogram, segment map, and tag-vs-reality analysis plots), see `main_notebook.ipynb`.
 
@@ -184,31 +188,21 @@ The notebook may assume **Google Colab** for `drive.mount` and optional `pip` in
 
 ## Key quantitative results (documented run)
 
-Figures below match the documented run inside `main_notebook.ipynb`.
-
 **Key takeaway:** Visibility is far more skewed than player satisfaction.
 
-| Topic | Approximate value (from `main_notebook.ipynb`) |
-|-------|-------------------------------|
-| Games after inner merge | **23,107** |
-| Review rows loaded & cleaned | **31,692,774** |
-| Median game-level `rec_rate` | **0.8421** |
-| Top 10% of games’ share of total peak CCU | **99.1%** (visibility concentration) |
-| Spearman: `rec_rate` vs `peak_ccu` | **~+0.22** |
-| Spearman: `rec_rate` vs `average_playtime_forever` | **~+0.08** |
-| K-Means k | **4**; silhouette (this run) | **0.3907** |
-| RQ1: Apriori vs FP-Growth | **Identical** frequent itemsets at `min_support = 0.10`; **58** rules with lift ≥ 1.0 |
-| Strongest rule (example) | `{Indie, RPG} -> {Adventure}` - **lift 1.395**, **confidence 0.622** |
-| Hidden-gem thresholding note | `peak_ccu <= median` is **0** in this run, so shortlist emphasizes low/no observed CCU visibility |
-| Hidden Gems shortlist (this run) | **3,421** candidates (transparent percentile rules in notebook) |
+- **23,107** games analyzed and **31,692,774** review rows processed.
+- Median game-level recommendation rate is **0.8421**.
+- The top **10%** of games capture **99.1%** of total peak-CCU visibility.
+- Quality and visibility are only weakly aligned (Spearman `rec_rate` vs `peak_ccu` is about **+0.22**).
+- The Hidden Gems shortlist identifies **3,421** candidates in this run.
 
-**LDA:** four topics are used as a **readable snapshot** (reactions/friction, product state, social positivity, design pillars - see notebook interpretation). **VADER:** recommended vs not-recommended distributions separate clearly in the documented plots; segment-level means are reported in the closing section.
+Full metrics and diagnostics remain in `main_notebook.ipynb`.
 
 ### Headline figure
 
 The main takeaway is visible concentration: despite high approval levels, visibility remains highly skewed toward a small slice of the catalog.
 
-![Long-tail visibility headline figure](./assets/store_home_share.jpg)
+![Market Position headline figure](./assets/market_position.png)
 
 ---
 
@@ -296,15 +290,18 @@ Then set `FULL_REVIEW_CACHE_PATH` in `main_notebook.ipynb` and keep `USE_REVIEW_
 
 ## Limitations and future work
 
-Summarized from Section 8 of `main_notebook.ipynb` (not exhaustive):
+### Limitations
 
-- **Coverage:** results generalize to the **merged subset** (games with both metadata and loaded review files), not the entire Steam catalog.  
-- **Association, not causation:** correlations and segments; not a causal identification of why a title is “Hidden.”  
-- **LDA / lexicon:** topics are **qualitative**; some tokens can be noisy; VADER is **not** gaming-slang-tuned.  
-- **Hidden Gems rules:** **transparent heuristics** (e.g. high `rec_rate` vs low `peak_ccu` by percentiles), not a learned ranker.  
-- **Static snapshot:** not a time-series model of launch, updates, or seasonality.
+- Results apply to the merged subset, not the full Steam catalog.
+- The analysis is correlational, not causal.
+- LDA topics and VADER sentiment are approximate and can miss gaming-specific language.
+- Hidden Gems detection uses transparent heuristics, not a learned ranking model.
 
-**Future work** (from the same section) includes scaling to the full metadata catalog, stratified or transformer-based sentiment, temporal analysis on review dates, causal-style comparisons, recommender integration, and a small **Streamlit / Gradio** demo.
+### Future work
+
+- Add temporal analysis of review and engagement trends.
+- Improve sentiment modeling with transformer-based approaches.
+- Build a recommender extension or interactive demo.
 
 ---
 
